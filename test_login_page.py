@@ -5,3 +5,4 @@ def test_guest_should_see_login_form(browser):
     page = LoginPage(browser, link)
     page.open()
     page.should_be_login_page()
+    page.can_see_forms()
