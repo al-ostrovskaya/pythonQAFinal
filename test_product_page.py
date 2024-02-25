@@ -1,5 +1,6 @@
 from .pages.main_page import MainPage
 from .pages.product_page import ProductPage
+from .pages.basket_page import BasketPage
 from selenium.webdriver.common.by import By
 import time
 import pytest
@@ -106,3 +107,43 @@ def test_guest_can_go_to_login_page_from_product_page (browser):
     page.open()
     page.go_to_login_page()
     time.sleep(20)
+
+def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
+
+
+    # Гость открывает страницу товара
+    link = "http://selenium1py.pythonanywhere.com/ru/catalogue/the-city-and-the-stars_95/"
+    page = ProductPage(browser, link)
+    page.open()
+    # Переходит в корзину по кнопке в шапке
+
+    page.go_to_basket_page()
+    # Ожидаем, что в корзине нет товаров
+    basketPage = BasketPage(browser, link)
+    basketPage.empty_basket_check()
+
+    # Ожидаем, что есть текст о том что корзина пуста
+    basket_info = browser.find_element(By.CSS_SELECTOR, "#content_inner")
+    basket_info_text = basket_info.text
+    check_text = "Ваша корзина пуста"
+    assert  check_text in basket_info_text, \
+        f"Корзина не пуста"
+
+
+@pytest.mark.skip
+def test_guest_can_see_product_in_basket_opened_from_product_page(browser):
+
+    # Гость открывает страницу товара
+    link = "http://selenium1py.pythonanywhere.com/ru/catalogue/the-city-and-the-stars_95/"
+    page = ProductPage(browser, link)
+    page.open()
+
+    # Переходит в корзину по кнопке в шапке
+    page.go_to_basket_page()
+
+    # Ожидаем, что в корзине есть товары
+    basketPage = BasketPage(browser, link)
+    basketPage.not_empty_basket_check()
+
+    # Ожидаем, что нет текста о том что корзина пуста
+    basketPage.not_empty_basket_text_check()
