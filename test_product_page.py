@@ -1,11 +1,65 @@
 from .pages.main_page import MainPage
 from .pages.product_page import ProductPage
 from .pages.basket_page import BasketPage
+from .pages.login_page import LoginPage
 from selenium.webdriver.common.by import By
 import time
 import pytest
 
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        self.page = LoginPage(browser, 'http://selenium1py.pythonanywhere.com/')
+        self.page.open()
+        self.page.go_to_login_page()
+        self.page.register_new_user(str(time.time()) + "@pythonmail.ru", str(time.time()) + "Password123!!!")
+        self.page.should_be_authorized_user()
 
+    def test_user_cant_see_success_message(self, browser):
+        self.link = 'http://selenium1py.pythonanywhere.com/ru/catalogue/coders-at-work_207/'
+        self.page = ProductPage(browser, self.link)
+        self.page.open()
+        self.page.should_not_be_success_message()
+
+    @pytest.mark.need_review
+    def test_user_can_add_product_to_basket(self, browser):
+        # открытие страницы
+        self.link = f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0"
+        page = MainPage(browser, self.link)
+        page.open()
+
+        # проверка на наличие промокода
+        product_page = ProductPage(browser, browser.current_url)
+        product_page.should_be_promo()
+
+        # считывание цены и названия товара в переменные
+        price = browser.find_element(By.CSS_SELECTOR, ".col-sm-6 .price_color")
+        price_text = price.text
+        name = browser.find_element(By.CSS_SELECTOR, ".col-sm-6 h1")
+        name_text = name.text
+
+        # добавление товара в корзину.
+        browser.find_element(By.CSS_SELECTOR, "#add_to_basket_form [type='submit']").click()
+        page.solve_quiz_and_get_code()
+        time.sleep(5)
+
+        # запись в переменные текста товара из сообщения о добавлении товара и суммы корзины
+        alertinner = browser.find_element(By.CSS_SELECTOR, "div .alertinner strong")
+        add_result = alertinner.text
+        cart_price = browser.find_element(By.CSS_SELECTOR, ".basket-mini")
+        cart_price_text = cart_price.text
+
+        # проверки на соответствие товара и цены с итоговой суммой корзины
+        assert name_text == add_result, \
+            f"В корзину был добавлен товар, отличный от выбранного {name_text}"
+
+        assert price_text in cart_price_text, \
+            f"Сумма корзины {cart_price_text} не совпадает с ценой товара {price_text}"
+
+        product_page.should_be_success_message()
+        browser.close()
+
+@pytest.mark.need_review
 def test_guest_can_add_product_to_basket(browser):
 
     #открытие страницы
@@ -24,7 +78,7 @@ def test_guest_can_add_product_to_basket(browser):
     name_text = name.text
 
     # добавление товара в корзину.
-    browser.find_element(By.CSS_SELECTOR, "[value='Добавить в корзину']").click()
+    browser.find_element(By.CSS_SELECTOR, "#add_to_basket_form [type='submit']").click()
     page.solve_quiz_and_get_code()
     time.sleep(5)
 
@@ -99,13 +153,15 @@ def test_guest_should_see_login_link_on_product_page(browser):
     page.open()
     page.should_be_login_link()
 
+@pytest.mark.need_review
 def test_guest_can_go_to_login_page_from_product_page (browser):
     link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
     page = ProductPage(browser, link)
     page.open()
     page.go_to_login_page()
-    time.sleep(20)
 
+
+@pytest.mark.need_review
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
 
 
@@ -139,3 +195,5 @@ def test_guest_can_see_product_in_basket_opened_from_product_page(browser):
     basketPage.not_empty_basket_check()
     # Ожидаем, что нет текста о том что корзина пуста
     basketPage.not_should_be_text_basket_is_empty()
+
+

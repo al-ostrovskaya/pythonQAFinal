@@ -36,7 +36,7 @@ def test_guest_cant_see_product_in_basket_opened_from_main_page(browser):
     basketPage.empty_basket_check()
 
     # Ожидаем, что есть текст о том что корзина пуста
-    basketPage.empty_basket_text_check()
+    basketPage.should_be_text_basket_is_empty()
 
 @pytest.mark.skip
 def test_guest_can_see_product_in_basket_opened_from_main_page(browser):
@@ -46,10 +46,8 @@ def test_guest_can_see_product_in_basket_opened_from_main_page(browser):
     page.open()
     # Переходит в корзину по кнопке в шапке
     page.go_to_basket_page()
-
     # Ожидаем, что в корзине есть товары
     basketPage = BasketPage(browser, link)
     basketPage.not_empty_basket_check()
-
     # Ожидаем, что нет текста о том что корзина пуста
-    basketPage.not_empty_basket_text_check()
+    basketPage.not_should_be_text_basket_is_empty()
