@@ -9,6 +9,7 @@ def test_guest_should_see_login_form(browser):
     page.should_be_login_page()
     page.can_see_forms()
 
+# Отдельная проверка регистрации пользователя
 def test_register_new_user(browser):
     link = "http://selenium1py.pythonanywhere.com/ru/accounts/login/"
     page = LoginPage(browser, link)

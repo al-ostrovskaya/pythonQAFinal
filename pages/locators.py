@@ -1,6 +1,5 @@
 from selenium.webdriver.common.by import By
 
-
 class LoginPageLocators():
     LOGIN_FORM = (By.CSS_SELECTOR, "#login_form")
     REG_FORM = (By.CSS_SELECTOR, "#register_form")
@@ -9,10 +8,13 @@ class LoginPageLocators():
     PASS_SING_UP_2 = (By.CSS_SELECTOR, "#id_registration-password2")
     BTN_SING_UP = (By.CSS_SELECTOR, "[value='Register']")
 
-
 class ProductPageLocators():
     PROMO = "newYear"
     SUCCESS_MESSAGE = (By.CSS_SELECTOR, ".alert-success")
+    PRODUCT_NAME = (By.CSS_SELECTOR, ".col-sm-6 h1")
+    PRODUCT_PRICE = (By.CSS_SELECTOR, ".col-sm-6 .price_color")
+    ALERTINNER = (By.CSS_SELECTOR, "div .alertinner strong")
+    CART_PRICE = (By.CSS_SELECTOR, ".basket-mini")
 
 class BasePageLocators():
     LOGIN_LINK = (By.CSS_SELECTOR, "#login_link")
