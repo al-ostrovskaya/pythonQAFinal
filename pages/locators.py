@@ -17,6 +17,6 @@ class BasePageLocators():
 
 class BasketPageLocators():
     ITEMS_FORM = (By.CSS_SELECTOR, ".basket-items")
-    EMPTY_INFO = (By.CSS_SELECTOR, ".content .row")
+    EMPTY_BASKET = (By.CSS_SELECTOR, 'div#content_inner > p')
 
 
